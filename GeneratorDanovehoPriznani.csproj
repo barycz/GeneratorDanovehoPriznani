@@ -71,6 +71,8 @@
     <Compile Include="Src\KH1Pisemnost.cs" />
     <Compile Include="Src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Src\Tax.cs" />
+    <Compile Include="Src\Transaction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
