@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Src\Book.cs" />
     <Compile Include="Src\DPH3Pisemnost.cs" />
     <Compile Include="Src\GeneratedClasses\dphdp3_epo2.cs" />
     <Compile Include="Src\GeneratedClasses\dphkh1_epo2.cs" />

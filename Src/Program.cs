@@ -11,6 +11,8 @@ namespace GeneratorDanovehoPriznani
 
 			var dph3 = DPH3.Pisemnost.FromXml(inPath);
 			var ctx = new GeneratorContext();
+			ctx.Book.LoadFromSheets();
+
 			dph3.Generate(ctx);
 			dph3.ToXml(outPath);
 		}
