@@ -1,5 +1,6 @@
 ﻿// Author: Tomas Barak
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
@@ -38,6 +39,8 @@ namespace GeneratorDanovehoPriznani.DPH3
 			VetaD?.Generate(ctx);
 			Veta1 = new PisemnostDPHDP3Veta1();
 			Veta1.Generate(ctx);
+			Veta4 = new PisemnostDPHDP3Veta4();
+			Veta4.Generate(ctx);
 			Veta6 = new PisemnostDPHDP3Veta6();
 			Veta6.Generate(ctx);
 		}
@@ -51,10 +54,27 @@ namespace GeneratorDanovehoPriznani.DPH3
 				from t in ctx.Transactions
 				where t.VATRate == VATRate.Standard && t.Direction == Transaction.EDirection.Incoming
 				select t;
-			obrat23 = (from t in standardVATTransactions select t.Value).Sum();
+			obrat23 = Math.Round((from t in standardVATTransactions select t.Value).Sum());
 			obrat23FieldSpecified = true;
-			dan23 = (from t in standardVATTransactions select t.VAT).Sum();
+			dan23 = Math.Round((from t in standardVATTransactions select t.VAT).Sum());
 			dan23Specified = true;
+		}
+	}
+
+	public partial class PisemnostDPHDP3Veta4
+	{
+		public void Generate(GeneratorContext ctx)
+		{
+			var standardVATTransactions =
+				from t in ctx.Transactions
+				where t.VATRate == VATRate.Standard && t.Direction == Transaction.EDirection.Outgoing
+				select t;
+			pln23 = Math.Round((from t in standardVATTransactions select t.Value).Sum());
+			pln23FieldSpecified = true;
+			odp_tuz23_nar = Math.Round((from t in standardVATTransactions select t.VAT).Sum());
+			odp_tuz23_narSpecified = true;
+			odp_sum_nar = odp_tuz23_nar;
+			odp_sum_narSpecified = true;
 		}
 	}
 
@@ -66,14 +86,14 @@ namespace GeneratorDanovehoPriznani.DPH3
 				from t in ctx.Transactions
 				where t.Direction == Transaction.EDirection.Incoming
 				select t.VAT;
-			dan_zocelk = incommingTransVAT.Sum();
+			dan_zocelk = Math.Round(incommingTransVAT.Sum());
 			dan_zocelkSpecified = true;
 
 			var outgoingTransVAT =
 				from t in ctx.Transactions
 				where t.Direction == Transaction.EDirection.Outgoing
 				select t.VAT;
-			odp_zocelk = outgoingTransVAT.Sum();
+			odp_zocelk = Math.Round(outgoingTransVAT.Sum());
 			odp_zocelkSpecified = true;
 
 			dano_da = dan_zocelk - odp_zocelk;
