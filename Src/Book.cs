@@ -7,6 +7,7 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using System.IO;
 using System.Threading;
+using System.Linq;
 
 namespace GeneratorDanovehoPriznani
 {
@@ -17,6 +18,13 @@ namespace GeneratorDanovehoPriznani
 		public Book()
 		{
 			Transactions = new List<Transaction>();
+		}
+
+		public Book GetBookForMonth(uint monthCode)
+		{
+			var ret = new Book();
+			ret.Transactions = Transactions.Where(t => t.MonthCode == monthCode).ToList();
+			return ret;
 		}
 
 		public void LoadFromSheets()
@@ -55,9 +63,11 @@ namespace GeneratorDanovehoPriznani
 				}
 
 				var trans = new Transaction();
-				trans.Value = decimal.Parse((string)row[2]);
+				trans.MonthCode = uint.Parse((string)row[0]);
 				trans.Direction =
 					(string)row[1] == "in" ? Transaction.EDirection.Incoming : Transaction.EDirection.Outgoing;
+				trans.Id = (string)row[2];
+				trans.Value = decimal.Parse((string)row[3]);
 				trans.VATRate = VATRate.Standard;
 
 				Transactions.Add(trans);
