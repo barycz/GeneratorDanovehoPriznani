@@ -8,6 +8,8 @@ using Google.Apis.Util.Store;
 using System.IO;
 using System.Threading;
 using System.Linq;
+using System;
+using System.Globalization;
 
 namespace GeneratorDanovehoPriznani
 {
@@ -67,7 +69,7 @@ namespace GeneratorDanovehoPriznani
 				trans.Direction =
 					(string)row[1] == "in" ? Transaction.EDirection.Incoming : Transaction.EDirection.Outgoing;
 				trans.Id = (string)row[2];
-				trans.Value = decimal.Parse((string)row[3]);
+				trans.Value = Convert.ToDecimal((string)row[3], new CultureInfo("en-US"));
 				trans.VATRate = VATRate.Standard;
 
 				Transactions.Add(trans);
