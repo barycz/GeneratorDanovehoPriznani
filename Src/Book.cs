@@ -8,8 +8,6 @@ using Google.Apis.Util.Store;
 using System.IO;
 using System.Threading;
 using System.Linq;
-using System;
-using System.Globalization;
 
 namespace GeneratorDanovehoPriznani
 {
@@ -52,7 +50,7 @@ namespace GeneratorDanovehoPriznani
 			});
 
 			var spreadsheetId = "";
-			var range = "Transactions!A2:D";
+			var range = "Transactions!A2:E";
 
 			var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
 			var response = request.Execute();
@@ -64,14 +62,7 @@ namespace GeneratorDanovehoPriznani
 					break;
 				}
 
-				var trans = new Transaction();
-				trans.MonthCode = uint.Parse((string)row[0]);
-				trans.Direction =
-					(string)row[1] == "in" ? Transaction.EDirection.Incoming : Transaction.EDirection.Outgoing;
-				trans.Id = (string)row[2];
-				trans.Value = Convert.ToDecimal((string)row[3], new CultureInfo("en-US"));
-				trans.VATRate = VATRate.Standard;
-
+				var trans = new Transaction(row);
 				Transactions.Add(trans);
 			}
 		}
