@@ -17,6 +17,7 @@ namespace GeneratorDanovehoPriznani
 		public uint MonthCode { get; }
 		public DateTime Date { get; } // datum uskutecneni zdanitelneho plneni
 		public EDirection Direction { get; }
+		public string VATId { get; } // danove identifikacni cislo(DIC) of the other party
 		public string Id { get; }
 		public decimal Value { get; }
 		public VATRate VATRate { get; }
@@ -27,8 +28,9 @@ namespace GeneratorDanovehoPriznani
 			MonthCode = uint.Parse((string)row[0]);
 			Date = DateTime.Parse((string)row[1]);
 			Direction = (string)row[2] == "in" ? EDirection.Incoming : EDirection.Outgoing;
-			Id = (string)row[3];
-			Value = Convert.ToDecimal((string)row[4], new CultureInfo("en-US"));
+			VATId = (string)row[3];
+			Id = (string)row[4];
+			Value = Convert.ToDecimal((string)row[5], new CultureInfo("en-US"));
 
 			VATRate = VATRate.Standard;
 		}

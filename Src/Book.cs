@@ -50,7 +50,7 @@ namespace GeneratorDanovehoPriznani
 			});
 
 			var spreadsheetId = "";
-			var range = "Transactions!A2:E";
+			var range = "Transactions!A2:F";
 
 			var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
 			var response = request.Execute();
