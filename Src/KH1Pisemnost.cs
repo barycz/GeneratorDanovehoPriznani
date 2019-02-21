@@ -42,12 +42,11 @@ namespace GeneratorDanovehoPriznani.KH1
 			VetaA2 = null;
 			VetaA3 = null;
 			VetaA4 = PisemnostDPHKH1VetaA4.CreateVetaA4Array(ctx);
+			VetaA5 = PisemnostDPHKH1VetaA5.CreateIfNeeded(ctx);
 
 			VetaB1 = null;
 			VetaB2 = PisemnostDPHKH1VetaB2.CreateVetaB2Array(ctx);
-
-			VetaB3 = new PisemnostDPHKH1VetaB3();
-			VetaB3.Generate(ctx);
+			VetaB3 = PisemnostDPHKH1VetaB3.CreateIfNeeded(ctx);
 
 			VetaC = new PisemnostDPHKH1VetaC();
 			VetaC.Generate(ctx);
@@ -87,6 +86,31 @@ namespace GeneratorDanovehoPriznani.KH1
 			dan1Specified = true;
 			kod_rezim_pl = "0";
 			zdph_44 = "N";
+		}
+	}
+
+	public partial class PisemnostDPHKH1VetaA5
+	{
+		public static PisemnostDPHKH1VetaA5 CreateIfNeeded(GeneratorContext ctx)
+		{
+			var inAnnonTrans =
+				from t in ctx.Transactions
+				where t.Direction == Transaction.EDirection.Incoming && t.IsAnnonymousInKH
+				select t;
+
+			var ret = new PisemnostDPHKH1VetaA5();
+			ret.zakl_dane1 = Math.Round((from t in inAnnonTrans select t.Value).Sum());
+			ret.zakl_dane1Specified = true;
+
+			if (ret.zakl_dane1 == 0)
+			{
+				return null;
+			}
+
+			ret.dan1 = Math.Round((from t in inAnnonTrans select t.VAT).Sum());
+			ret.dan1Specified = true;
+
+			return ret;
 		}
 	}
 
@@ -138,18 +162,26 @@ namespace GeneratorDanovehoPriznani.KH1
 
 	public partial class PisemnostDPHKH1VetaB3
 	{
-		public void Generate(GeneratorContext ctx)
+		public static PisemnostDPHKH1VetaB3 CreateIfNeeded(GeneratorContext ctx)
 		{
 			var outAnnonTrans =
 				from t in ctx.Transactions
 				where t.Direction == Transaction.EDirection.Outgoing && t.IsAnnonymousInKH
 				select t;
 
-			zakl_dane1 = Math.Round((from t in outAnnonTrans select t.Value).Sum());
-			zakl_dane1Specified = true;
+			var ret = new PisemnostDPHKH1VetaB3();
+			ret.zakl_dane1 = Math.Round((from t in outAnnonTrans select t.Value).Sum());
+			ret.zakl_dane1Specified = true;
 
-			dan1 = Math.Round((from t in outAnnonTrans select t.VAT).Sum());
-			dan1Specified = true;
+			if (ret.zakl_dane1 == 0)
+			{
+				return null;
+			}
+
+			ret.dan1 = Math.Round((from t in outAnnonTrans select t.VAT).Sum());
+			ret.dan1Specified = true;
+
+			return ret;
 		}
 	}
 
