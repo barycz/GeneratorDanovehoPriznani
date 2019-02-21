@@ -41,7 +41,7 @@ namespace GeneratorDanovehoPriznani.KH1
 			VetaA1 = null;
 			VetaA2 = null;
 			VetaA3 = null;
-			VetaA4 = null;
+			VetaA4 = PisemnostDPHKH1VetaA4.CreateVeta4Array(ctx);
 
 			VetaB1 = null;
 			VetaB2 = null;
@@ -51,6 +51,42 @@ namespace GeneratorDanovehoPriznani.KH1
 
 			VetaC = new PisemnostDPHKH1VetaC();
 			VetaC.Generate(ctx);
+		}
+	}
+
+	public partial class PisemnostDPHKH1VetaA4
+	{
+		public static PisemnostDPHKH1VetaA4[] CreateVeta4Array(GeneratorContext ctx)
+		{
+			var inNotAnnonTrans =
+				from t in ctx.Transactions
+				where t.Direction == Transaction.EDirection.Incoming && t.IsAnnonymousInKH == false
+				select t;
+
+			var inNotAnnonTransList = inNotAnnonTrans.ToList();
+
+			var ret = new PisemnostDPHKH1VetaA4[inNotAnnonTransList.Count];
+			for (var i = 0; i < inNotAnnonTransList.Count; ++i)
+			{
+				ret[i] = new PisemnostDPHKH1VetaA4();
+				ret[i].Generate(ctx, inNotAnnonTransList[i], i + 1);
+			}
+			return ret;
+		}
+
+		public void Generate(GeneratorContext ctx, Transaction t, int row1)
+		{
+			c_radku = row1;
+			c_radkuSpecified = true;
+			dic_odb = t.VATId;
+			c_evid_dd = t.Id;
+			dppd = t.Date.ToString("d.M.yyyy");
+			zakl_dane1 = Math.Round(t.Value);
+			zakl_dane1Specified = true;
+			dan1 = Math.Round(t.VAT);
+			dan1Specified = true;
+			kod_rezim_pl = "0";
+			zdph_44 = "N";
 		}
 	}
 
