@@ -14,14 +14,17 @@ namespace GeneratorDanovehoPriznani
 			Outgoing
 		}
 
+		public static decimal AnnonymousInKHThreshold = 10000;
 		public uint MonthCode { get; }
 		public DateTime Date { get; } // datum uskutecneni zdanitelneho plneni
 		public EDirection Direction { get; }
 		public string VATId { get; } // danove identifikacni cislo(DIC) of the other party
 		public string Id { get; }
-		public decimal Value { get; }
+		public decimal Value { get; } // without the tax
 		public VATRate VATRate { get; }
 		public decimal VAT { get { return VATRate.CalculateVAT(Value); } }
+		public decimal ValueWithVAT { get { return Value + VAT; } }
+		public bool IsAnnonymousInKH { get { return ValueWithVAT < AnnonymousInKHThreshold; } }
 
 		public Transaction(IList<object> row)
 		{

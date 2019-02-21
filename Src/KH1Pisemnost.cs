@@ -37,12 +37,18 @@ namespace GeneratorDanovehoPriznani.KH1
 		public void Generate(GeneratorContext ctx)
 		{
 			VetaD?.Generate(ctx);
+
 			VetaA1 = null;
 			VetaA2 = null;
 			VetaA3 = null;
 			VetaA4 = null;
+
 			VetaB1 = null;
 			VetaB2 = null;
+
+			VetaB3 = new PisemnostDPHKH1VetaB3();
+			VetaB3.Generate(ctx);
+
 			VetaC = new PisemnostDPHKH1VetaC();
 			VetaC.Generate(ctx);
 		}
@@ -55,6 +61,23 @@ namespace GeneratorDanovehoPriznani.KH1
 			mesic = ctx.Period.Month;
 			rok = ctx.Period.Year;
 			d_poddp = ctx.SubmitDate.ToString("d.M.yyyy");
+		}
+	}
+
+	public partial class PisemnostDPHKH1VetaB3
+	{
+		public void Generate(GeneratorContext ctx)
+		{
+			var outAnnonTrans =
+				from t in ctx.Transactions
+				where t.Direction == Transaction.EDirection.Outgoing && t.IsAnnonymousInKH
+				select t;
+
+			zakl_dane1 = Math.Round((from t in outAnnonTrans select t.Value).Sum());
+			zakl_dane1Specified = true;
+
+			dan1 = Math.Round((from t in outAnnonTrans select t.VAT).Sum());
+			dan1Specified = true;
 		}
 	}
 
