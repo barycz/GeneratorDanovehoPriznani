@@ -28,12 +28,12 @@ namespace GeneratorDanovehoPriznani
 
 		public Transaction(IList<object> row)
 		{
-			MonthCode = uint.Parse((string)row[0]);
+			MonthCode = Convert.ToUInt32(row[0]);
 			Date = DateTime.Parse((string)row[1]);
 			Direction = (string)row[2] == "in" ? EDirection.Incoming : EDirection.Outgoing;
-			VATId = (string)row[3];
-			Id = (string)row[4];
-			Value = Convert.ToDecimal((string)row[5], new CultureInfo("en-US"));
+			VATId = Convert.ToString(row[3]);
+			Id = Convert.ToString(row[4]);
+			Value = Convert.ToDecimal(row[5]);
 
 			VATRate = VATRate.Standard;
 		}

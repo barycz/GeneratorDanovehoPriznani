@@ -53,11 +53,12 @@ namespace GeneratorDanovehoPriznani
 			var range = "Transactions!A2:F";
 
 			var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
+			request.ValueRenderOption = SpreadsheetsResource.ValuesResource.GetRequest.ValueRenderOptionEnum.UNFORMATTEDVALUE;
 			var response = request.Execute();
 
 			foreach (var row in response.Values)
 			{
-				if(string.IsNullOrEmpty((string)row[0]))
+				if(string.IsNullOrEmpty((string)row[2]))
 				{
 					break;
 				}
