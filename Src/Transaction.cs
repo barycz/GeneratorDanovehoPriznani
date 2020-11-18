@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Globalization;
 
 namespace GeneratorDanovehoPriznani
@@ -36,6 +37,19 @@ namespace GeneratorDanovehoPriznani
 			Value = Convert.ToDecimal(row[5]);
 
 			VATRate = VATRate.Standard;
+		}
+	}
+
+	public static class IEnumerableTransactionExtensions
+	{
+		public static decimal TotalRoundedValue(this IEnumerable<Transaction> transactions)
+		{
+			return Math.Round((from t in transactions select t.Value).Sum());
+		}
+
+		public static decimal TotalRoundedVAT(this IEnumerable<Transaction> transactions)
+		{
+			return Math.Round((from t in transactions select t.VAT).Sum());
 		}
 	}
 }

@@ -54,9 +54,9 @@ namespace GeneratorDanovehoPriznani.DPH3
 				from t in ctx.Transactions
 				where t.VATRate == VATRate.Standard && t.Direction == Transaction.EDirection.Incoming
 				select t;
-			obrat23 = Math.Round((from t in standardVATTransactions select t.Value).Sum());
+			obrat23 = standardVATTransactions.TotalRoundedValue();
 			obrat23FieldSpecified = true;
-			dan23 = Math.Round((from t in standardVATTransactions select t.VAT).Sum());
+			dan23 = standardVATTransactions.TotalRoundedVAT();
 			dan23Specified = true;
 		}
 	}
@@ -69,9 +69,9 @@ namespace GeneratorDanovehoPriznani.DPH3
 				from t in ctx.Transactions
 				where t.VATRate == VATRate.Standard && t.Direction == Transaction.EDirection.Outgoing
 				select t;
-			pln23 = Math.Round((from t in standardVATTransactions select t.Value).Sum());
+			pln23 = standardVATTransactions.TotalRoundedValue();
 			pln23FieldSpecified = true;
-			odp_tuz23_nar = Math.Round((from t in standardVATTransactions select t.VAT).Sum());
+			odp_tuz23_nar = standardVATTransactions.TotalRoundedVAT();
 			odp_tuz23_narSpecified = true;
 			odp_sum_nar = odp_tuz23_nar;
 			odp_sum_narSpecified = true;
@@ -82,18 +82,18 @@ namespace GeneratorDanovehoPriznani.DPH3
 	{
 		public void Generate(GeneratorContext ctx)
 		{
-			var incommingTransVAT =
+			var incommingTrans =
 				from t in ctx.Transactions
 				where t.Direction == Transaction.EDirection.Incoming
-				select t.VAT;
-			dan_zocelk = Math.Round(incommingTransVAT.Sum());
+				select t;
+			dan_zocelk = incommingTrans.TotalRoundedVAT();
 			dan_zocelkSpecified = true;
 
-			var outgoingTransVAT =
+			var outgoingTrans =
 				from t in ctx.Transactions
 				where t.Direction == Transaction.EDirection.Outgoing
-				select t.VAT;
-			odp_zocelk = Math.Round(outgoingTransVAT.Sum());
+				select t;
+			odp_zocelk = outgoingTrans.TotalRoundedVAT();
 			odp_zocelkSpecified = true;
 
 			dano_da = dan_zocelk - odp_zocelk;

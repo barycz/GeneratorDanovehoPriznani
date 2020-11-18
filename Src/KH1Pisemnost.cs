@@ -99,7 +99,7 @@ namespace GeneratorDanovehoPriznani.KH1
 				select t;
 
 			var ret = new PisemnostDPHKH1VetaA5();
-			ret.zakl_dane1 = Math.Round((from t in inAnnonTrans select t.Value).Sum());
+			ret.zakl_dane1 = inAnnonTrans.TotalRoundedValue();
 			ret.zakl_dane1Specified = true;
 
 			if (ret.zakl_dane1 == 0)
@@ -107,7 +107,7 @@ namespace GeneratorDanovehoPriznani.KH1
 				return null;
 			}
 
-			ret.dan1 = Math.Round((from t in inAnnonTrans select t.VAT).Sum());
+			ret.dan1 = inAnnonTrans.TotalRoundedVAT();
 			ret.dan1Specified = true;
 
 			return ret;
@@ -170,7 +170,7 @@ namespace GeneratorDanovehoPriznani.KH1
 				select t;
 
 			var ret = new PisemnostDPHKH1VetaB3();
-			ret.zakl_dane1 = Math.Round((from t in outAnnonTrans select t.Value).Sum());
+			ret.zakl_dane1 = outAnnonTrans.TotalRoundedValue();
 			ret.zakl_dane1Specified = true;
 
 			if (ret.zakl_dane1 == 0)
@@ -178,7 +178,7 @@ namespace GeneratorDanovehoPriznani.KH1
 				return null;
 			}
 
-			ret.dan1 = Math.Round((from t in outAnnonTrans select t.VAT).Sum());
+			ret.dan1 = outAnnonTrans.TotalRoundedVAT();
 			ret.dan1Specified = true;
 
 			return ret;
@@ -189,18 +189,18 @@ namespace GeneratorDanovehoPriznani.KH1
 	{
 		public void Generate(GeneratorContext ctx)
 		{
-			var incommingValue =
+			var incomming =
 				from t in ctx.Transactions
 				where t.Direction == Transaction.EDirection.Incoming
-				select t.Value;
-			obrat23 = Math.Round(incommingValue.Sum());
+				select t;
+			obrat23 = incomming.TotalRoundedValue();
 			obrat23Specified = true;
 
-			var outgoingValue =
+			var outgoing =
 				from t in ctx.Transactions
 				where t.Direction == Transaction.EDirection.Outgoing
-				select t.Value;
-			pln23 = Math.Round(outgoingValue.Sum());
+				select t;
+			pln23 = outgoing.TotalRoundedValue();
 			pln23Specified = true;
 		}
 	}
