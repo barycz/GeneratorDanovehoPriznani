@@ -15,10 +15,17 @@ namespace GeneratorDanovehoPriznani
 			Outgoing
 		}
 
+		public enum ELocation
+		{
+			Domestic,
+			EU
+		}
+
 		public static decimal AnnonymousInKHThreshold = 10000;
 		public uint MonthCode { get; }
 		public DateTime Date { get; } // datum uskutecneni zdanitelneho plneni
 		public EDirection Direction { get; }
+		public ELocation Location { get; }
 		public string VATId { get; } // danove identifikacni cislo(DIC) of the other party
 		public string Id { get; }
 		public decimal Value { get; } // without the tax
@@ -32,6 +39,7 @@ namespace GeneratorDanovehoPriznani
 			MonthCode = Convert.ToUInt32(row[0]);
 			Date = DateTime.Parse((string)row[1]);
 			Direction = (string)row[2] == "in" ? EDirection.Incoming : EDirection.Outgoing;
+			Location = (string)row[2] == "outeu" ? ELocation.EU : ELocation.Domestic;
 			VATId = Convert.ToString(row[3]);
 			Id = Convert.ToString(row[4]);
 			Value = Convert.ToDecimal(row[5]);
