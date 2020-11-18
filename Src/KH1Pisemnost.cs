@@ -39,7 +39,7 @@ namespace GeneratorDanovehoPriznani.KH1
 			VetaD?.Generate(ctx);
 
 			VetaA1 = null;
-			VetaA2 = null;
+			VetaA2 = PisemnostDPHKH1VetaA2.CreateVetaA2Array(ctx);
 			VetaA3 = null;
 			VetaA4 = PisemnostDPHKH1VetaA4.CreateVetaA4Array(ctx);
 			VetaA5 = PisemnostDPHKH1VetaA5.CreateIfNeeded(ctx);
@@ -50,6 +50,41 @@ namespace GeneratorDanovehoPriznani.KH1
 
 			VetaC = new PisemnostDPHKH1VetaC();
 			VetaC.Generate(ctx);
+		}
+	}
+
+	public partial class PisemnostDPHKH1VetaA2
+	{
+		public static PisemnostDPHKH1VetaA2[] CreateVetaA2Array(GeneratorContext ctx)
+		{
+			var outEUTrans =
+				from t in ctx.Transactions
+				where t.Direction == Transaction.EDirection.Outgoing && t.Location == Transaction.ELocation.EU
+				select t;
+
+			var outEUTransList = outEUTrans.ToList();
+
+			var ret = new PisemnostDPHKH1VetaA2[outEUTransList.Count];
+			for (var i = 0; i < outEUTransList.Count; ++i)
+			{
+				ret[i] = new PisemnostDPHKH1VetaA2();
+				ret[i].Generate(ctx, outEUTransList[i], i + 1);
+			}
+			return ret;
+		}
+
+		public void Generate(GeneratorContext ctx, Transaction t, int row1)
+		{
+			c_radku = row1;
+			c_radkuSpecified = true;
+			k_stat = t.VATId.Substring(0, 2);
+			vatid_dod = t.VATId.Substring(2);
+			c_evid_dd = t.Id;
+			dppd = t.Date.ToString("d.M.yyyy");
+			zakl_dane1 = Math.Round(t.Value);
+			zakl_dane1Specified = true;
+			dan1 = Math.Round(t.VAT);
+			dan1Specified = true;
 		}
 	}
 
@@ -166,7 +201,10 @@ namespace GeneratorDanovehoPriznani.KH1
 		{
 			var outAnnonTrans =
 				from t in ctx.Transactions
-				where t.Direction == Transaction.EDirection.Outgoing && t.IsAnnonymousInKH
+				where
+					t.Direction == Transaction.EDirection.Outgoing &&
+					t.IsAnnonymousInKH &&
+					t.Location == Transaction.ELocation.Domestic
 				select t;
 
 			var ret = new PisemnostDPHKH1VetaB3();
@@ -196,12 +234,23 @@ namespace GeneratorDanovehoPriznani.KH1
 			obrat23 = incomming.TotalRoundedValue();
 			obrat23Specified = true;
 
-			var outgoing =
+			var outgoingDomestic =
 				from t in ctx.Transactions
-				where t.Direction == Transaction.EDirection.Outgoing
+				where
+					t.Direction == Transaction.EDirection.Outgoing &&
+					t.Location == Transaction.ELocation.Domestic
 				select t;
-			pln23 = outgoing.TotalRoundedValue();
+			pln23 = outgoingDomestic.TotalRoundedValue();
 			pln23Specified = true;
+
+			var outgoingEU =
+				from t in ctx.Transactions
+				where
+					t.Direction == Transaction.EDirection.Outgoing &&
+					t.Location == Transaction.ELocation.EU
+				select t;
+			celk_zd_a2 = outgoingEU.TotalRoundedValue();
+			celk_zd_a2Specified = true;
 		}
 	}
 }
