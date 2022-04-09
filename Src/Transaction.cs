@@ -21,8 +21,16 @@ namespace GeneratorDanovehoPriznani
 			EU
 		}
 
-		public static decimal AnnonymousInKHThreshold = 10000;
+		public static int MonthToQuartal(int month) => (month - 1) / 3 + 1;
+
+        public static string CreateQuarterCode(uint monthCode)
+        {
+			return string.Format("{0}q{1}", monthCode / 100, MonthToQuartal((int)(monthCode % 100)));
+        }
+
+        public static decimal AnnonymousInKHThreshold = 10000;
 		public uint MonthCode { get; }
+		public string QuarterCode => CreateQuarterCode(MonthCode);
 		public DateTime Date { get; } // datum uskutecneni zdanitelneho plneni
 		public EDirection Direction { get; }
 		public ELocation Location { get; }

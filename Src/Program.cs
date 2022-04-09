@@ -11,7 +11,7 @@ namespace GeneratorDanovehoPriznani
 
 			dph3.Generate(ctx);
 
-			var outPath = string.Format("../../{0}-dph3.xml", ctx.PeriodMonthCode);
+			var outPath = string.Format("../../{0}-dph3.xml", ctx.OutputNameBase);
 			dph3.ToXml(outPath);
 		}
 
@@ -22,7 +22,7 @@ namespace GeneratorDanovehoPriznani
 
 			kh1.Generate(ctx);
 
-			var outPath = string.Format("../../{0}-kh1.xml", ctx.PeriodMonthCode);
+			var outPath = string.Format("../../{0}-kh1.xml", ctx.OutputNameBase);
 			kh1.ToXml(outPath);
 		}
 

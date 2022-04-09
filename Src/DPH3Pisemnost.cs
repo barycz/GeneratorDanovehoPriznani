@@ -133,8 +133,20 @@ namespace GeneratorDanovehoPriznani.DPH3
 	{
 		public void Generate(GeneratorContext ctx)
 		{
-			mesic = ctx.Period.Month;
-			rok = ctx.Period.Year;
+            if (ctx.Period == GeneratorContext.PeriodType.Month)
+            {
+                mesic = ctx.ForMonth;
+				mesicSpecified = true;
+				ctvrtSpecified = false;
+            }
+            else
+            {
+                ctvrt = ctx.ForQuarter;
+				ctvrtFieldSpecified = true;
+				mesicSpecified = false;
+            }
+
+            rok = ctx.ForYear;
 			d_poddp = ctx.SubmitDate.ToString("d.M.yyyy");
 		}
 	}
