@@ -8,23 +8,22 @@ using Google.Apis.Util.Store;
 using System.IO;
 using System.Threading;
 using System.Linq;
+using System;
 
 namespace GeneratorDanovehoPriznani
 {
 	public class Book
 	{
-		public List<Transaction> Transactions { get; private set; }
+		public IEnumerable<Transaction> Transactions => AllTransactions.Where(PeriodFilter);
 
-		public Book()
-		{
-			Transactions = new List<Transaction>();
-		}
+		private List<Transaction> AllTransactions { get; set; }
 
-		public Book GetBookForMonth(uint monthCode)
+		private Func<Transaction, bool> PeriodFilter { get; }
+
+		public Book(Func<Transaction, bool> periodFilter)
 		{
-			var ret = new Book();
-			ret.Transactions = Transactions.Where(t => t.MonthCode == monthCode).ToList();
-			return ret;
+			AllTransactions = new List<Transaction>();
+			PeriodFilter = periodFilter;
 		}
 
 		public void LoadFromSheets()
@@ -64,7 +63,7 @@ namespace GeneratorDanovehoPriznani
 				}
 
 				var trans = new Transaction(row);
-				Transactions.Add(trans);
+				AllTransactions.Add(trans);
 			}
 		}
 	}
