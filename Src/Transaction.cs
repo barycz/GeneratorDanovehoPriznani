@@ -18,7 +18,8 @@ namespace GeneratorDanovehoPriznani
 		public enum ELocation
 		{
 			Domestic,
-			EU
+			EU,
+			ThirdCountry
 		}
 
 		public static int MonthToQuartal(int month) => (month - 1) / 3 + 1;
@@ -47,7 +48,7 @@ namespace GeneratorDanovehoPriznani
 			MonthCode = Convert.ToUInt32(row[0]);
 			Date = DateTime.Parse((string)row[1]);
 			Direction = (string)row[2] == "in" ? EDirection.Incoming : EDirection.Outgoing;
-			Location = (string)row[2] == "outeu" ? ELocation.EU : ELocation.Domestic;
+			Location = (string)row[2] == "ou3rd" ? ELocation.ThirdCountry : ((string)row[2] == "outeu" ? ELocation.EU : ELocation.Domestic);
 			VATId = Convert.ToString(row[3]);
 			Id = Convert.ToString(row[4]);
 			Value = Convert.ToDecimal(row[5]);

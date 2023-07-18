@@ -66,9 +66,21 @@ namespace GeneratorDanovehoPriznani.DPH3
 					&& t.Location == Transaction.ELocation.EU
 				select t;
 			p_zb23 = outgoingEUTransactions.TotalRoundedValue();
-			p_zb23Specified = true;
+			p_zb23Specified = p_zb23 != 0;
 			dan_pzb23 = outgoingEUTransactions.TotalRoundedVAT();
-			dan_pzb23Specified = true;
+			dan_pzb23Specified = dan_pzb23 != 0;
+
+			var outgoingThirdCountryTransactions =
+				from t in ctx.Transactions
+				where t.VATRate == VATRate.Standard
+					&& t.Direction == Transaction.EDirection.Outgoing
+					&& t.Location == Transaction.ELocation.ThirdCountry
+				select t;
+
+			dov_zb23 = outgoingThirdCountryTransactions.TotalRoundedValue();
+			dov_zb23Specified = dov_zb23 != 0;
+			dan_dzb23 = outgoingThirdCountryTransactions.TotalRoundedVAT();
+			dan_dzb23Specified = dan_dzb23 != 0;
 		}
 	}
 
@@ -86,19 +98,19 @@ namespace GeneratorDanovehoPriznani.DPH3
 				where t.Location == Transaction.ELocation.Domestic
 				select t;
 
-			var standardVATTransactionsEU =
+			var standardVATTransactionsNonDomestic =
 				from t in standardVATTransactions
-				where t.Location == Transaction.ELocation.EU
+				where t.Location != Transaction.ELocation.Domestic
 				select t;
 
 			pln23 = standardVATTransactionsDomestic.TotalRoundedValue();
 			pln23FieldSpecified = true;
 			odp_tuz23_nar = standardVATTransactionsDomestic.TotalRoundedVAT();
 			odp_tuz23_narSpecified = true;
-			nar_zdp23 = standardVATTransactionsEU.TotalRoundedValue();
-			nar_zdp23Specified = true;
-			od_zdp23 = standardVATTransactionsEU.TotalRoundedVAT();
-			od_zdp23Specified = true;
+			nar_zdp23 = standardVATTransactionsNonDomestic.TotalRoundedValue();
+			nar_zdp23Specified = nar_zdp23 != 0;
+			od_zdp23 = standardVATTransactionsNonDomestic.TotalRoundedVAT();
+			od_zdp23Specified = od_zdp23 != 0;
 			odp_sum_nar = standardVATTransactions.TotalRoundedVAT();
 			odp_sum_narSpecified = true;
 		}
@@ -112,7 +124,7 @@ namespace GeneratorDanovehoPriznani.DPH3
 				from t in ctx.Transactions
 				where
 					t.Direction == Transaction.EDirection.Incoming ||
-					(t.Direction == Transaction.EDirection.Outgoing && t.Location == Transaction.ELocation.EU)
+					(t.Direction == Transaction.EDirection.Outgoing && t.Location != Transaction.ELocation.Domestic)
 				select t;
 			dan_zocelk = incommingTrans.TotalRoundedVAT();
 			dan_zocelkSpecified = true;

@@ -155,7 +155,10 @@ namespace GeneratorDanovehoPriznani.KH1
 		{
 			var outNotAnnonTrans =
 				from t in ctx.Transactions
-				where t.Direction == Transaction.EDirection.Outgoing && t.IsAnnonymousInKH == false
+				where
+					t.Direction == Transaction.EDirection.Outgoing &&
+					t.Location != Transaction.ELocation.ThirdCountry &&
+					t.IsAnnonymousInKH == false
 				select t;
 
 			var outNotAnnonTransList = outNotAnnonTrans.ToList();
@@ -215,6 +218,7 @@ namespace GeneratorDanovehoPriznani.KH1
 				from t in ctx.Transactions
 				where
 					t.Direction == Transaction.EDirection.Outgoing &&
+					t.Location != Transaction.ELocation.ThirdCountry &&
 					t.IsAnnonymousInKH &&
 					t.Location == Transaction.ELocation.Domestic
 				select t;
